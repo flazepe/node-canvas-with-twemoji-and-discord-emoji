@@ -14,7 +14,7 @@ function parseDiscordEmojis(entities) {
   
   for (const entity of entities) {
 	if (typeof entity === "string") {
-	  const words = entity.replace(/<?(a:|:)\w*:(\d{17}|\d{18})>/, " $& ").split(/\s+/);
+	  const words = entity.replace(/<?(a:|:)\w*:(\d{17}|\d{18})>/, "\u200b$&\u200b").split("\u200b");
 	  
 	  words.map(word => matchDiscordEmojis(word)
 		? newArray.push({ url: `https://cdn.discordapp.com/emojis/${matchDiscordEmojis(word)[2]}.png` })
