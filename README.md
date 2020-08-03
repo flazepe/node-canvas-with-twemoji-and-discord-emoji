@@ -1,5 +1,7 @@
 # node-canvas-with-twemoji-and-discord-emoji
 
+A fork of node-canvas-with-twemoji with Discord emoji support.
+
 ## Installation
 ```shell
 $ npm install node-canvas-with-twemoji-and-discord-emoji
