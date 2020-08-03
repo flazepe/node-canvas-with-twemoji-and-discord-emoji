@@ -9,17 +9,17 @@ const { parse } = require('twemoji-parser');
 
 const discordEmojiPattern = "<a?:\\w+:(\\d{17}|\\d{18})>";
 
-function parseDiscordEmojis(entities) {
+function parseDiscordEmojis(textEntities) {
 	const newArray = [];
 	
-	for (const entity of entities) {
+	for (const entity of textEntities) {
 		if (typeof entity === "string") {
 			const words = entity.replace(new RegExp(discordEmojiPattern, "g"), "\u200b$&\u200b").split("\u200b");
 			
 			words.map(word => word.match(new RegExp(discordEmojiPattern))
 				? newArray.push({ url: `https://cdn.discordapp.com/emojis/${word.match(new RegExp(discordEmojiPattern))[1]}.png` })
 				: newArray.push(word)
-				);
+			);
 		}
 		
 		else newArray.push(entity);
