@@ -8,8 +8,10 @@
   },
   "author": "flazepe",
   "dependencies": {
-    "canvas": "^2.6.1",
     "twemoji": "^12.1.5"
+  },
+  "devDependencies": {
+    "canvas": "^2.6.1",
   },
   "license": "MIT",
   "repository": {
