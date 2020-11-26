@@ -7,27 +7,23 @@ const { parse } = require('twemoji-parser');
  *  > ['君', TwemojiObj(👼), 'の味方', TwemojiObj(🤝), 'だよ']
  */
 
-const discordEmojiPattern = "<a?:\\w+:(\\d{17}|\\d{18})>";
+const discordEmojiPattern = "<a?:\\w+:(\\d{17,18})>";
 
 function parseDiscordEmojis(textEntities) {
-	const newArray = [];
-	
-	for (const entity of textEntities) {
-		if (typeof entity === "string") {
-			const words = entity.replace(new RegExp(discordEmojiPattern, "g"), "\u200b$&\u200b").split("\u200b");
-			
-			words.map(word => word.match(new RegExp(discordEmojiPattern))
-				? newArray.push({ url: `https://cdn.discordapp.com/emojis/${word.match(new RegExp(discordEmojiPattern))[1]}.png` })
-				: newArray.push(word)
-			);
-		}
-		
-		else newArray.push(entity);
-	}
-	
-	return newArray;
-}
+    const newTextEntities = [];
 
+    for (const entity of textEntities) {
+        if (typeof entity === "string") {
+            const words = entity.replace(new RegExp(discordEmojiPattern, "g"), "\u200b$&\u200b").split("\u200b");
+            words.forEach(word => word.match(new RegExp(discordEmojiPattern)) ? newTextEntities.push({ url: `https://cdn.discordapp.com/emojis/${word.match(new RegExp(discordEmojiPattern))[1]}.png` }) : newTextEntities.push(word));
+        }
+
+        else newTextEntities.push(entity);
+    }
+
+    return newTextEntities;
+}
+ 
 module.exports = function splitEntitiesFromText (text) {
   const twemojiEntities = parse(text, { assetType: 'svg' });
 

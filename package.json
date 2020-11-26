@@ -1,6 +1,6 @@
 {
   "name": "node-canvas-with-twemoji-and-discord-emoji",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "A fork of node-canvas-with-twemoji with Discord emoji support.",
   "main": "src/index.js",
   "scripts": {
@@ -9,11 +9,11 @@
   "author": "flazepe",
   "dependencies": {
     "canvas": "^2.6.1",
-    "twemoji": "^12.1.5"
+    "twemoji": "^13.0.1"
   },
   "license": "MIT",
   "repository": {
-	"type": "git",
-	"url": "https://github.com/flazepe/node-canvas-with-twemoji-and-discord-emoji.git"
+    "type": "git",
+    "url": "https://github.com/flazepe/node-canvas-with-twemoji-and-discord-emoji.git"
   }
 }

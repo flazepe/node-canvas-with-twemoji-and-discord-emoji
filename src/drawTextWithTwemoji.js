@@ -2,6 +2,9 @@ const splitEntitiesFromText = require('./utils/splitEntitiesFromText');
 const loadTwemojiImageByUrl = require('./utils/loadTwemojiImageByUrl');
 const getFontSizeByCssFont = require('./utils/getFontSizeByCssFont');
 
+const measureText = require('./measureText');
+const { Canvas } = require('canvas');
+
 module.exports = async function drawTextWithEmoji (
   context,
   fillType,
@@ -9,7 +12,7 @@ module.exports = async function drawTextWithEmoji (
   x,
   y,
   {
-    maxWidth = Infinity, // TODO
+    maxWidth = Infinity,
     emojiSideMarginPercent = 0.1,
     emojiTopMarginPercent = 0.1
   } = {}
@@ -17,20 +20,49 @@ module.exports = async function drawTextWithEmoji (
   const textEntities = splitEntitiesFromText(text);
   const fontSize = getFontSizeByCssFont(context.font);
   const baseLine = context.measureText('').alphabeticBaseline;
+  const textAlign = context.textAlign;
+  const transform = context.currentTransform;
 
   const emojiSideMargin = fontSize * emojiSideMarginPercent;
   const emojiTopMargin = fontSize * emojiTopMarginPercent;
 
+  const textWidth = measureText(context, text, { emojiSideMarginPercent }).width;
+
+  // for Text align
+  let textLeftMargin = 0;
+
+  if (!['', 'left', 'start'].includes(textAlign)) {
+    context.textAlign = 'left';
+
+    switch (textAlign) {
+      case 'center':
+        textLeftMargin = -textWidth / 2;
+        break;
+
+      case 'right':
+      case 'end':
+        textLeftMargin = -textWidth;
+        break;
+    }
+  }
+
+  // Drawing
   let currentWidth = 0;
+
+  if (textWidth > maxWidth) {
+    let scale = maxWidth / textWidth;
+    context.setTransform(scale, 0, 0, 1, 0, 0);
+    x = x / scale;
+  }
 
   for (let i = 0; i < textEntities.length; i++) {
     const entity = textEntities[i];
     if (typeof entity === 'string') {
       // Common text case
       if (fillType === 'fill') {
-        context.fillText(entity, x + currentWidth, y);
+        context.fillText(entity, textLeftMargin + x + currentWidth, y);
       } else {
-        context.strokeText(entity, x + currentWidth, y);
+        context.strokeText(entity, textLeftMargin + x + currentWidth, y);
       }
 
       currentWidth += context.measureText(entity).width;
@@ -39,7 +71,7 @@ module.exports = async function drawTextWithEmoji (
       const emoji = await loadTwemojiImageByUrl(entity.url);
       context.drawImage(
         emoji,
-        x + currentWidth + emojiSideMargin,
+        textLeftMargin + x + currentWidth + emojiSideMargin,
         y + emojiTopMargin - fontSize - baseLine,
         fontSize,
         fontSize
@@ -48,4 +80,10 @@ module.exports = async function drawTextWithEmoji (
       currentWidth += fontSize + (emojiSideMargin * 2);
     }
   }
+
+  // Restore
+  if (textAlign) {
+    context.textAlign = textAlign;
+  }
+  context.setTransform(transform);
 }
