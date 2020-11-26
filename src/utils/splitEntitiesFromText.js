@@ -15,7 +15,7 @@ function parseDiscordEmojis(textEntities) {
     for (const entity of textEntities) {
         if (typeof entity === "string") {
             const words = entity.replace(new RegExp(discordEmojiPattern, "g"), "\u200b$&\u200b").split("\u200b");
-            words.forEach(word => word.match(new RegExp(discordEmojiPattern)) ? newTextEntities.push({ url: `https://cdn.discordapp.com/emojis/${word.match(new RegExp(discordEmojiPattern))[1]}.png` }) : newTextEntities.push(word));
+            words.forEach(word => newTextEntities.push(word.match(new RegExp(discordEmojiPattern)) ? { url: `https://cdn.discordapp.com/emojis/${word.match(new RegExp(discordEmojiPattern))[1]}.png` } : word));
         }
 
         else newTextEntities.push(entity);

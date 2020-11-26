@@ -21,7 +21,6 @@ module.exports = async function drawTextWithEmoji (
   const fontSize = getFontSizeByCssFont(context.font);
   const baseLine = context.measureText('').alphabeticBaseline;
   const textAlign = context.textAlign;
-  const transform = context.currentTransform;
 
   const emojiSideMargin = fontSize * emojiSideMarginPercent;
   const emojiTopMargin = fontSize * emojiTopMarginPercent;
@@ -48,12 +47,6 @@ module.exports = async function drawTextWithEmoji (
 
   // Drawing
   let currentWidth = 0;
-
-  if (textWidth > maxWidth) {
-    let scale = maxWidth / textWidth;
-    context.setTransform(scale, 0, 0, 1, 0, 0);
-    x = x / scale;
-  }
 
   for (let i = 0; i < textEntities.length; i++) {
     const entity = textEntities[i];
@@ -85,5 +78,4 @@ module.exports = async function drawTextWithEmoji (
   if (textAlign) {
     context.textAlign = textAlign;
   }
-  context.setTransform(transform);
 }
