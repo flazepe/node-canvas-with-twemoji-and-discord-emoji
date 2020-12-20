@@ -15,22 +15,21 @@ function parseDiscordEmojis(textEntities) {
     for (const entity of textEntities) {
         if (typeof entity === "string") {
             const words = entity.replace(new RegExp(discordEmojiPattern, "g"), "\u200b$&\u200b").split("\u200b");
-            words.forEach(word => newTextEntities.push(word.match(new RegExp(discordEmojiPattern)) ? { url: `https://cdn.discordapp.com/emojis/${word.match(new RegExp(discordEmojiPattern))[1]}.png` } : word));
+            for (const word of words) newTextEntities.push(word.match(new RegExp(discordEmojiPattern)) ? { url: `https://cdn.discordapp.com/emojis/${word.match(new RegExp(discordEmojiPattern))[1]}.png` } : word);
         }
-
         else newTextEntities.push(entity);
     }
 
     return newTextEntities;
 }
  
-module.exports = function splitEntitiesFromText (text) {
-  const twemojiEntities = parse(text, { assetType: 'svg' });
+module.exports = function splitEntitiesFromText(text) {
+  const twemojiEntities = parse(text, { assetType: "png" });
 
   let unparsedText = text;
   let lastTwemojiIndice = 0;
   const textEntities = [];
-  
+
   twemojiEntities.forEach((twemoji) => {
     textEntities.push(
       unparsedText.slice(0, twemoji.indices[0] - lastTwemojiIndice)
