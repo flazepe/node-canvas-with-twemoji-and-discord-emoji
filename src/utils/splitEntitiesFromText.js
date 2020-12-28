@@ -7,7 +7,7 @@ const { parse } = require('twemoji-parser');
  *  > ['君', TwemojiObj(👼), 'の味方', TwemojiObj(🤝), 'だよ']
  */
 
-const discordEmojiPattern = "<a?:\\w+:(\\d{17,18})>";
+const discordEmojiPattern = "<a?:\\w+:(\\d{17,19})>";
 
 function parseDiscordEmojis(textEntities) {
     const newTextEntities = [];
@@ -17,6 +17,7 @@ function parseDiscordEmojis(textEntities) {
             const words = entity.replace(new RegExp(discordEmojiPattern, "g"), "\u200b$&\u200b").split("\u200b");
             for (const word of words) newTextEntities.push(word.match(new RegExp(discordEmojiPattern)) ? { url: `https://cdn.discordapp.com/emojis/${word.match(new RegExp(discordEmojiPattern))[1]}.png` } : word);
         }
+
         else newTextEntities.push(entity);
     }
 
