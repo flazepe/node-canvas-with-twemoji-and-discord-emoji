@@ -1,6 +1,6 @@
 {
   "name": "node-canvas-with-twemoji-and-discord-emoji",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A fork of node-canvas-with-twemoji with Discord emoji support.",
   "main": "src/index.js",
   "types": "src/index.d.ts",
