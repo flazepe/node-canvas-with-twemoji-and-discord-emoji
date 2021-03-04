@@ -10,20 +10,21 @@ const { parse } = require('twemoji-parser');
 const discordEmojiPattern = "<a?:\\w+:(\\d{17,19})>";
 
 function parseDiscordEmojis(textEntities) {
-    const newTextEntities = [];
+  const newTextEntities = [];
 
-    for (const entity of textEntities) {
-        if (typeof entity === "string") {
-            const words = entity.replace(new RegExp(discordEmojiPattern, "g"), "\u200b$&\u200b").split("\u200b");
-            for (const word of words) newTextEntities.push(word.match(new RegExp(discordEmojiPattern)) ? { url: `https://cdn.discordapp.com/emojis/${word.match(new RegExp(discordEmojiPattern))[1]}.png` } : word);
-        }
+  for (const entity of textEntities) {
+    if (typeof entity === "string")
+      for (const word of entity.replace(new RegExp(discordEmojiPattern, "g"), "\u200b$&\u200b").split("\u200b")) {
+        const match = word.match(new RegExp(discordEmojiPattern));
+        newTextEntities.push(match ? { url: `https://cdn.discordapp.com/emojis/${match[1]}.png` } : word);
+      }
 
-        else newTextEntities.push(entity);
-    }
+    else newTextEntities.push(entity);
+  }
 
-    return newTextEntities;
+  return newTextEntities;
 }
- 
+
 module.exports = function splitEntitiesFromText(text) {
   const twemojiEntities = parse(text, { assetType: "png" });
 
