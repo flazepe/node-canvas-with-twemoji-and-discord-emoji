@@ -3,7 +3,6 @@ const loadTwemojiImageByUrl = require('./utils/loadTwemojiImageByUrl');
 const getFontSizeByCssFont = require('./utils/getFontSizeByCssFont');
 
 const measureText = require('./measureText');
-const { Canvas } = require('canvas');
 
 module.exports = async function drawTextWithEmoji (
   context,

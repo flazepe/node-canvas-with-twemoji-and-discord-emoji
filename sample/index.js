@@ -21,22 +21,22 @@ app.get('/', async (req, res) => {
   context.font = '18px serif';
   context.textAlign = "left";
   context.fillStyle = '#888888';
-  await wt.fillTextWithTwemoji(context, 'I am left aligned 😳', 10, 100, {maxWidth: 50});
+  await wt.fillTextWithTwemoji(context, 'I am <:hmm:792092150883942450> left aligned 😳', 10, 100, {maxWidth: 50});
 
   context.textAlign = "center";
-  await wt.fillTextWithTwemoji(context, '我々✨は宇宙人👽だ', 100, 150, {maxWidth: 100});
+  await wt.fillTextWithTwemoji(context, '我々✨は宇宙人👽だ <:hmm:792092150883942450>', 100, 150, {maxWidth: 100});
 
   context.textAlign = "right";
-  await wt.fillTextWithTwemoji(context, 'I am right aligned 😳', 190, 200, {maxWidth: 100});
+  await wt.fillTextWithTwemoji(context, 'I am <:hmm:792092150883942450> right aligned 😳', 190, 200, {maxWidth: 100});
 
   context.textAlign = "left";
-  await wt.fillTextWithTwemoji(context, 'left 😳', 10, 250);
+  await wt.fillTextWithTwemoji(context, '<:hmm:792092150883942450> left 😳', 10, 250);
 
   context.textAlign = "center";
-  await wt.fillTextWithTwemoji(context, 'center 😳', 100, 300);
+  await wt.fillTextWithTwemoji(context, '<:hmm:792092150883942450> center 😳', 100, 300);
 
   context.textAlign = "right";
-  await wt.fillTextWithTwemoji(context, 'right 😳', 190, 350);
+  await wt.fillTextWithTwemoji(context, '<:hmm:792092150883942450> right 😳', 190, 350);
 
   if (req.query.text) {
     await wt.fillTextWithTwemoji(context, req.query.text, 10, 400);
