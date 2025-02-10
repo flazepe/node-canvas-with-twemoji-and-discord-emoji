@@ -1,35 +1,25 @@
-const splitEntitiesFromText = require('./utils/splitEntitiesFromText');
-const getFontSizeByCssFont = require('./utils/getFontSizeByCssFont');
+const splitEntitiesFromText = require("./utils/splitEntitiesFromText"),
+	getFontSizeByCssFont = require("./utils/getFontSizeByCssFont");
 
-module.exports = function measureText (
-  context,
-  text,
-  {
-    emojiSideMarginPercent = 0.1
-  } = {}
-) {
-  const textEntities = splitEntitiesFromText(text);
-  const fontSize = getFontSizeByCssFont(context.font);
+module.exports = (ctx, text, { emojiSideMarginPercent = 0.1 } = {}) => {
+	const textEntities = splitEntitiesFromText(text),
+		fontSize = getFontSizeByCssFont(ctx.font),
+		emojiSideMargin = fontSize * emojiSideMarginPercent;
 
-  const emojiSideMargin = fontSize * emojiSideMarginPercent;
+	let width = 0;
 
-  let currentWidth = 0;
+	for (let i = 0; i < textEntities.length; i++) {
+		const entity = textEntities[i];
+		if (typeof entity === "string") {
+			// Common text case
+			width += ctx.measureText(entity).width;
+		} else {
+			// Emoji case
+			width += fontSize + emojiSideMargin * 2;
+		}
+	}
 
-  for (let i = 0; i < textEntities.length; i++) {
-    const entity = textEntities[i];
-    if (typeof entity === 'string') {
-      // Common text case
-      currentWidth += context.measureText(entity).width;
-    } else {
-      // Emoji case
-      currentWidth += fontSize + (emojiSideMargin * 2);
-    }
-  }
+	const { alphabeticBaseline } = ctx.measureText("");
 
-  const measured = context.measureText('');
-
-  return {
-    width: currentWidth,
-    alphabeticBaseline: measured.alphabeticBaseline
-  };
-}
+	return { width, alphabeticBaseline };
+};

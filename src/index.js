@@ -1,14 +1,6 @@
-const drawTextWithTwemoji = require('./drawTextWithTwemoji');
-const measureText = require('./measureText');
+const drawTextWithTwemoji = require("./drawTextWithTwemoji"),
+	measureText = require("./measureText");
 
-exports.fillTextWithTwemoji = async function (context, text, x, y, options = {}) {
-  return await drawTextWithTwemoji(context, 'fill', text, x, y, options);
-}
-
-exports.strokeTextWithTwemoji = async function (context, text, x, y, options = {}) {
-  return await drawTextWithTwemoji(context, 'stroke', text, x, y, options);
-}
-
-exports.measureText = function (context, text, options = {}) {
-  return measureText(context, text, options);
-}
+exports.fillTextWithTwemoji = async (context, text, x, y, options = {}) => drawTextWithTwemoji(context, "fill", text, x, y, options);
+exports.strokeTextWithTwemoji = async (context, text, x, y, options = {}) => drawTextWithTwemoji(context, "stroke", text, x, y, options);
+exports.measureText = (context, text, options = {}) => measureText(context, text, options);

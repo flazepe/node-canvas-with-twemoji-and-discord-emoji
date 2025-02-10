@@ -1,16 +1,16 @@
-const { loadImage } = require('canvas');
+const CACHED_TWEMOJI_IMAGES = new Map(),
+	{ loadImage } = require("canvas");
 
-const cachedTwemojiImages = new Map();
+module.exports = url =>
+	new Promise(async (resolve, reject) => {
+		if (CACHED_TWEMOJI_IMAGES.has(url)) return resolve(CACHED_TWEMOJI_IMAGES.get(url));
 
-module.exports =  async function loadTwemojiImageByUrl (url) {
-  return new Promise(async (res) => {
-    if (cachedTwemojiImages.has(url)) {
-      return res(cachedTwemojiImages.get(url));
-    }
+		try {
+			const image = await loadImage(url);
+			if (url.startsWith("https://cdn.jsdelivr.net")) CACHED_TWEMOJI_IMAGES.set(url, image);
 
-    const image = await loadImage(url);
-    if (!url.includes("discord")) cachedTwemojiImages.set(url, image);
-
-    return res(image);
-  });
-}
+			resolve(image);
+		} catch (error) {
+			reject(error);
+		}
+	});

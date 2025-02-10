@@ -1,26 +1,28 @@
 # node-canvas-with-twemoji-and-discord-emoji
 
-A fork of node-canvas-with-twemoji with Discord emoji support.
-This is a module that is able to draw emoji on node-canvas.
+A fork of [node-canvas-with-twemoji](https://github.com/cagpie/node-canvas-with-twemoji) by [cagpie](https://github.com/cagpie) with Discord emoji support.
 
 ## Installation
-```shell
+
+```sh
 $ npm install node-canvas-with-twemoji-and-discord-emoji
 ```
+
 [npm](https://www.npmjs.com/package/node-canvas-with-twemoji-and-discord-emoji)
 
 ## Quick Example
-```javascript
-const { createCanvas } = require('canvas');
-const { fillTextWithTwemoji } = require('node-canvas-with-twemoji-and-discord-emoji');
 
-async function main () {
-    const canvas = createCanvas(200, 200);
-    const context = canvas.getContext('2d');
+```js
+const { createCanvas } = require("canvas");
+const { fillTextWithTwemoji } = require("node-canvas-with-twemoji-and-discord-emoji");
 
-    context.fillStyle = '#000000';
-    context.font = '30px Arial';
-    await fillTextWithTwemoji(context, 'emoji 😉 discord emoji <:id:name>', 100, 100);
+async function main() {
+	const canvas = createCanvas(200, 200),
+		ctx = ctx.getContext("2d");
+
+	ctx.fillStyle = "#000000";
+	ctx.font = "30px Arial";
+	await fillTextWithTwemoji(context, "emoji 😉 discord emoji <:id:name>", 100, 100);
 }
 
 main();
@@ -28,8 +30,8 @@ main();
 
 ## Dependencies
 
-- node-canvas [GitHub](https://github.com/Automattic/node-canvas)
-- twemoji-parser [GitHub](https://github.com/twitter/twemoji-parser)
+-   node-canvas [GitHub](https://github.com/Automattic/node-canvas)
+-   @twemoji/parser [GitHub](https://github.com/jdecked/twemoji)
 
 ## Licence
 

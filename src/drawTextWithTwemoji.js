@@ -1,81 +1,66 @@
-const splitEntitiesFromText = require('./utils/splitEntitiesFromText');
-const loadTwemojiImageByUrl = require('./utils/loadTwemojiImageByUrl');
-const getFontSizeByCssFont = require('./utils/getFontSizeByCssFont');
+const splitEntitiesFromText = require("./utils/splitEntitiesFromText"),
+	loadTwemojiImageByUrl = require("./utils/loadTwemojiImageByUrl"),
+	getFontSizeByCssFont = require("./utils/getFontSizeByCssFont"),
+	measureText = require("./measureText");
 
-const measureText = require('./measureText');
+module.exports = async (ctx, fillType, text, x, y, { maxWidth = Infinity, emojiSideMarginPercent = 0.1, emojiTopMarginPercent = 0.1 } = {}) => {
+	const textEntities = splitEntitiesFromText(text),
+		fontSize = getFontSizeByCssFont(ctx.font),
+		baseLine = ctx.measureText("").alphabeticBaseline,
+		textAlign = ctx.textAlign,
+		transform = ctx.currentTransform,
+		emojiSideMargin = fontSize * emojiSideMarginPercent,
+		emojiTopMargin = fontSize * emojiTopMarginPercent,
+		textWidth = measureText(ctx, text, { emojiSideMarginPercent }).width;
 
-module.exports = async function drawTextWithEmoji (
-  context,
-  fillType,
-  text,
-  x,
-  y,
-  {
-    maxWidth = Infinity,
-    emojiSideMarginPercent = 0.1,
-    emojiTopMarginPercent = 0.1
-  } = {}
-) {
-  const textEntities = splitEntitiesFromText(text);
-  const fontSize = getFontSizeByCssFont(context.font);
-  const baseLine = context.measureText('').alphabeticBaseline;
-  const textAlign = context.textAlign;
+	// Text align
+	let textLeftMargin = 0;
 
-  const emojiSideMargin = fontSize * emojiSideMarginPercent;
-  const emojiTopMargin = fontSize * emojiTopMarginPercent;
+	if (!["", "left", "start"].includes(textAlign)) {
+		ctx.textAlign = "left";
 
-  const textWidth = measureText(context, text, { emojiSideMarginPercent }).width;
+		switch (textAlign) {
+			case "center":
+				textLeftMargin = -textWidth / 2;
+				break;
 
-  // for Text align
-  let textLeftMargin = 0;
+			case "right":
+			case "end":
+				textLeftMargin = -textWidth;
+				break;
+		}
+	}
 
-  if (!['', 'left', 'start'].includes(textAlign)) {
-    context.textAlign = 'left';
+	// Draw
+	let width = 0;
 
-    switch (textAlign) {
-      case 'center':
-        textLeftMargin = -textWidth / 2;
-        break;
+	if (textWidth > maxWidth) {
+		const scale = maxWidth / textWidth;
+		ctx.setTransform(scale, 0, 0, 1, 0, 0);
+		x = x / scale;
+	}
 
-      case 'right':
-      case 'end':
-        textLeftMargin = -textWidth;
-        break;
-    }
-  }
+	for (let i = 0; i < textEntities.length; i++) {
+		const entity = textEntities[i];
+		if (typeof entity === "string") {
+			// Common text case
+			if (fillType === "fill") {
+				ctx.fillText(entity, textLeftMargin + x + width, y);
+			} else {
+				ctx.strokeText(entity, textLeftMargin + x + width, y);
+			}
 
-  // Drawing
-  let currentWidth = 0;
+			width += ctx.measureText(entity).width;
+		} else {
+			// Emoji case
+			const emoji = await loadTwemojiImageByUrl(entity.url);
+			ctx.drawImage(emoji, textLeftMargin + x + width + emojiSideMargin, y + emojiTopMargin - fontSize - baseLine, fontSize, fontSize);
+			width += fontSize + emojiSideMargin * 2;
+		}
+	}
 
-  for (let i = 0; i < textEntities.length; i++) {
-    const entity = textEntities[i];
-    if (typeof entity === 'string') {
-      // Common text case
-      if (fillType === 'fill') {
-        context.fillText(entity, textLeftMargin + x + currentWidth, y);
-      } else {
-        context.strokeText(entity, textLeftMargin + x + currentWidth, y);
-      }
+	// Restore
+	if (textAlign) ctx.textAlign = textAlign;
 
-      currentWidth += context.measureText(entity).width;
-    } else {
-      // Emoji case
-      const emoji = await loadTwemojiImageByUrl(entity.url);
-
-      context.drawImage(
-        emoji,
-        textLeftMargin + x + currentWidth + emojiSideMargin,
-        y + emojiTopMargin - fontSize - baseLine,
-        fontSize,
-        fontSize
-      );
-
-      currentWidth += fontSize + (emojiSideMargin * 2);
-    }
-  }
-
-  // Restore
-  if (textAlign) {
-    context.textAlign = textAlign;
-  }
-}
+	ctx.setTransform(transform);
+};
